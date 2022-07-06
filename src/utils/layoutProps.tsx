@@ -1,4 +1,7 @@
-export interface LazoutProps {
+import React, { forwardRef } from "react";
+import { ViewStyle, StyleSheet, ViewProps, StyleProp } from "react-native";
+
+export interface LayoutProps {
   //basics
   width?: number;
   height?: number;
@@ -53,3 +56,30 @@ export interface LazoutProps {
   zIndex?: number;
   aspectRatio?: boolean;
 }
+
+// interface LayoutStyle {
+// }
+
+export function layoutProps<
+  Props extends React.PropsWithRef<{ style?: StyleProp<any> }>,
+  RNComponent extends React.ComponentType<Props>
+>(Component: React.ComponentType<Props>) {
+  return forwardRef<RNComponent, Props & LayoutProps>(
+    ({ style, ...props }, ref) => {
+      const componentStyle: ViewStyle = {
+        width: 100,
+        height: 100,
+        backgroundColor: "red",
+      };
+      return (
+        <Component
+          ref={ref}
+          {...(props as Props)}
+          style={[componentStyle, style]}
+        />
+      );
+    }
+  );
+}
+
+// ...StyleSheet.absoluteFillObject,
