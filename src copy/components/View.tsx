@@ -1,13 +1,7 @@
-import React, { useRef } from "react";
-import {
-  View as RNView,
-  TouchableOpacity as RNTouchableOpacity,
-  TextInput,
-} from "react-native";
-import { M, P, S } from "../style/constants";
+import { View as RNView, ViewProps } from "react-native";
 import { layoutProps } from "../utils/layoutProps";
 
-const View = layoutProps(RNView);
+const View = layoutProps<ViewProps, RNView>(RNView);
 // const TouchableOpacity = layoutProps(RNTouchableOpacity);
 
 // const MyTextInput = layoutProps(TextInput);

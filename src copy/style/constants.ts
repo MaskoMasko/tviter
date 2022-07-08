@@ -1,4 +1,5 @@
 import { ViewStyle, StyleSheet, Dimensions } from "react-native";
+import { colorsToTxt } from "../utils/colorsToTxt";
 //rand generirana paleta boja s https://coolors.co/
 
 //object names da ne bude previse importi
@@ -28,6 +29,9 @@ export const C = {
   //transparent
   transparent: "rgba(255,255,255,0)",
 };
+
+const colorsTxt = colorsToTxt(C);
+export const colorsTxtTypes = [...colorsTxt] as const;
 
 //padding
 export const P = {

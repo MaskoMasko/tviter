@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import { ViewStyle, StyleSheet, ViewProps, StyleProp } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
 
 export interface LayoutProps {
   //basics
@@ -61,8 +61,11 @@ export interface LayoutProps {
 // }
 
 export function layoutProps<
-  Props extends React.PropsWithRef<{ style?: StyleProp<any> }>,
-  RNComponent extends React.ComponentType<Props>
+  //ovo salje da ima componeneta style prop ca je krivo
+  Props extends React.PropsWithRef<{
+    style?: StyleProp<any>;
+  }>,
+  RNComponent
 >(Component: React.ComponentType<Props>) {
   return forwardRef<RNComponent, Props & LayoutProps>(
     ({ style, ...props }, ref) => {
