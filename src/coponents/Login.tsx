@@ -1,14 +1,12 @@
 import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
-import React, { useState } from "react";
+import React from "react";
 import { Button, Text, TextInput, View } from "react-native";
-import { BASE_URL } from "../../constants";
 import useAuth from "../hooks/useAuth";
 
 export const Login = ({ setNoAccount }: any) => {
   const navigation = useNavigation() as any;
 
-  const { userInfo, setUserInfo } = useAuth();
+  const { userInfo, setUserInfo, login } = useAuth();
 
   return (
     <View>
@@ -26,8 +24,11 @@ export const Login = ({ setNoAccount }: any) => {
       <Text onPress={() => setNoAccount(true)}>No account? Register</Text>
       <Button
         title="Login"
-        onPress={() => {
-          console.log("nisto");
+        onPress={async () => {
+          const res: any = await login!();
+          if (typeof res === "string") {
+            navigation.navigate("Posts");
+          } else throw new Error("Login failed!");
         }}
       />
     </View>
