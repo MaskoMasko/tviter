@@ -14,7 +14,7 @@ export const Router = () => {
     <NavigationContainer>
       <AuthContextProvider>
         <Stack.Navigator>
-          <Stack.Screen name="Testing" component={TestingScreen} />
+          {/* <Stack.Screen name="Testing" component={TestingScreen} /> */}
           <Stack.Screen
             name="Auth"
             component={AuthScreen}

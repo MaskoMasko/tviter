@@ -15,10 +15,10 @@ export const TestingScreen = observer(() => {
     return testingStore.fetchPeople();
   });
 
-  type dataType = typeof data
-
   if (isIdle || isLoading) return <Text>loadingg..</Text>;
   if (isError) return <Text>error</Text>;
+
+  console.log(data);
 
   getUser();
   return (
