@@ -1,14 +1,21 @@
 import React from "react";
 import { FlatList } from "react-native";
-import { Text } from "react-native";
+import { SinglePost } from "./SinglePost";
 
-export const PostsList = ({ data }: any) => {
+export const PostsList = ({ data, users, rerenderList }: any) => {
   return (
     <FlatList
       data={data}
       keyExtractor={(item) => item.id}
-      renderItem={({ item }) => {
-        return <Text>{JSON.stringify(item, null, 2)}</Text>;
+      contentContainerStyle={{
+        alignItems: "center",
+        flexDirection: "column-reverse",
+      }}
+      style={{ height: 600 }}
+      extraData={rerenderList}
+      renderItem={({ item: post }) => {
+        const user = users.find((user: any) => user.id === post.user_id).name;
+        return <SinglePost data={{ post, user }} />;
       }}
     />
   );

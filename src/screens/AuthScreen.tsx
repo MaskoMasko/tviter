@@ -1,23 +1,24 @@
 import React, { useState } from "react";
-import { View } from "react-native";
-import { ImageBackground } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Login } from "../coponents/Login";
-import { Reigster } from "../coponents/Register";
+import { Register } from "../coponents/Register";
+import { C } from "../../constants";
+import useAuth from "~/hooks/useAuth";
 
 export const AuthScreen = () => {
-  const [noAccount, setNoAccount] = useState(false);
+  const auth = useAuth();
   return (
-    <View style={{ flex: 1 }}>
-      <ImageBackground
-        source={require("../../assets/login-image.jpg")}
-        imageStyle={{ backgroundColor: "red", width: "100%", height: "100%" }}
-      >
-        {!noAccount ? (
-          <Login setNoAccount={setNoAccount} />
-        ) : (
-          <Reigster setNoAccount={setNoAccount} />
-        )}
-      </ImageBackground>
+    <View style={styles.authContainer}>
+      {!auth.isLoggedIn ? <Login /> : <Register />}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  authContainer: {
+    flex: 1,
+    backgroundColor: C.lightGreen,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

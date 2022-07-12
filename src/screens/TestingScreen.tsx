@@ -24,7 +24,7 @@ export const TestingScreen = observer(() => {
   return (
     <View>
       <Text>{testingStore.possiblySomething}</Text>
-      <Text>{JSON.stringify(data.results, null, 2)}</Text>
+      <Text>{JSON.stringify(data, null, 2)}</Text>
       <Text>{JSON.stringify(data.results[0].name, null, 2)}</Text>
     </View>
   );

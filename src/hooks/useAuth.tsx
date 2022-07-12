@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { createContext, useContext, useMemo, useState } from "react";
 import { BASE_URL } from "../../constants";
 
-const AuthContext = createContext({});
+const AuthContext = createContext<ContextType | undefined>(undefined);
 
 interface UserInfo {
   email?: string;
@@ -15,7 +15,7 @@ export const AuthContextProvider = ({ children }: any) => {
     password: "",
   });
 
-  const [userToken, setUserToken] = useState<string>("");
+  const [userToken, setUserToken] = useState<string | undefined>(undefined);
 
   const login = async () => {
     try {
@@ -66,9 +66,20 @@ export const AuthContextProvider = ({ children }: any) => {
     }
   };
 
+  const isLoggedIn = userToken !== undefined;
+
   const memoizedValues = useMemo(
-    () => ({ userInfo, setUserInfo, userToken, login, meInfo, register }),
-    [userInfo, setUserInfo, login, register]
+    () => ({
+      userInfo,
+      setUserInfo,
+      userToken,
+      login,
+      meInfo,
+      register,
+      isLoggedIn,
+      setUserToken,
+    }),
+    [userInfo, setUserInfo, login, register, isLoggedIn]
   );
 
   return (
@@ -81,39 +92,18 @@ export const AuthContextProvider = ({ children }: any) => {
 interface ContextType {
   userInfo: UserInfo;
   setUserInfo: React.Dispatch<React.SetStateAction<UserInfo>>;
-  userToken: string;
-  setUserToken: React.Dispatch<React.SetStateAction<UserInfo>>;
+  userToken: string | undefined;
+  setUserToken: React.Dispatch<React.SetStateAction<string | undefined>>;
   login: () => Promise<any>;
   meInfo: () => Promise<any>;
   register: () => Promise<any>;
+  isLoggedIn: boolean;
 }
 
 export default function useAuth() {
-  return useContext<Partial<ContextType>>(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context)
+    throw new Error("Tried using useAuth without AuthContextProvider");
+
+  return context;
 }
-
-export const fetchAllPosts = async (userToken: string) => {
-  try {
-    const res = await axios({
-      method: "get",
-      url: BASE_URL + "/posts",
-      headers: { Authorization: `Bearer ${userToken}` },
-    });
-    return res.data;
-  } catch (error) {
-    return false;
-  }
-};
-
-export const fetchAllUsers = async (userToken: string) => {
-  try {
-    const res = await axios({
-      method: "get",
-      url: BASE_URL + "/users",
-      headers: { Authorization: `Bearer ${userToken}` },
-    });
-    return res.data;
-  } catch (error) {
-    return false;
-  }
-};

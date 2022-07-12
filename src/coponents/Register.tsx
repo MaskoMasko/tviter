@@ -1,9 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { Button, Text, TextInput, View } from "react-native";
-import useAuth from "../hooks/useAuth";
+import useAuth from "~/hooks/useAuth";
 
-export const Reigster = ({ setNoAccount }: any) => {
+export const Register = () => {
   const { userInfo, setUserInfo } = useAuth();
   const [confirmPass, setConfirmPass] = useState("");
   const { register } = useAuth();
@@ -23,7 +23,7 @@ export const Reigster = ({ setNoAccount }: any) => {
       />
       <Text>Confirm Password</Text>
       <TextInput value={confirmPass} onChangeText={setConfirmPass} />
-      <Text onPress={() => setNoAccount(false)}>Alreadz have acc... Login</Text>
+      <Text>Alreadz have acc... Login</Text>
       <Button
         title="Register"
         onPress={async () => {
