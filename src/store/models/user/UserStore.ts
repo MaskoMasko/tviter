@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { BASE_URL } from "../../../../constants";
+import { BASE_URL } from "../../../constants";
 import { flow, Instance, types } from "mobx-state-tree";
 import { User } from "./User";
 

@@ -1,20 +1,22 @@
 import axios from "axios";
 import React, { createContext, useContext, useMemo, useState } from "react";
-import { BASE_URL } from "../../constants";
+import { BASE_URL } from "../constants";
 
 const AuthContext = createContext<ContextType | undefined>(undefined);
 
 interface UserInfo {
   email?: string;
   password?: string;
+  password_confirmation?: string;
 }
 
 export const AuthContextProvider = ({ children }: any) => {
   const [userInfo, setUserInfo] = useState<UserInfo>({
     email: "",
     password: "",
+    password_confirmation: "",
   });
-
+  const [hasAcc, setHasAcc] = useState(true);
   const [userToken, setUserToken] = useState<string | undefined>(undefined);
 
   const login = async () => {
@@ -78,8 +80,10 @@ export const AuthContextProvider = ({ children }: any) => {
       register,
       isLoggedIn,
       setUserToken,
+      hasAcc,
+      setHasAcc,
     }),
-    [userInfo, setUserInfo, login, register, isLoggedIn]
+    [userInfo, setUserInfo, login, register, isLoggedIn, hasAcc]
   );
 
   return (
@@ -98,6 +102,8 @@ interface ContextType {
   meInfo: () => Promise<any>;
   register: () => Promise<any>;
   isLoggedIn: boolean;
+  hasAcc: boolean;
+  setHasAcc: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function useAuth() {

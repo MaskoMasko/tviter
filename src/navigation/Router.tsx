@@ -1,11 +1,11 @@
-import * as React from "react";
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthScreen } from "../screens/AuthScreen";
 import { AuthContextProvider } from "../hooks/useAuth";
-import { PostsScreen } from "../screens/PostsScreen";
+import { PostsScreen } from "../screens/PostListScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
-import { TestingScreen } from "../screens/TestingScreen";
+// import { TestingScreen } from "../screens/TestingScreen";
 
 const Stack = createNativeStackNavigator();
 

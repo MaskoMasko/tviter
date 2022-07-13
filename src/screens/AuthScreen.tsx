@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Login } from "../coponents/Login";
-import { Register } from "../coponents/Register";
-import { C } from "../../constants";
+import { AuthContainer } from "~/components/auth/AuthContainer";
 import useAuth from "~/hooks/useAuth";
+import { C } from "../constants";
 
 export const AuthScreen = () => {
   const auth = useAuth();
   return (
     <View style={styles.authContainer}>
-      {!auth.isLoggedIn ? <Login /> : <Register />}
+      {auth.hasAcc ? (
+        <AuthContainer type="login" />
+      ) : (
+        <AuthContainer type="register" />
+      )}
     </View>
   );
 };
