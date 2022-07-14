@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "react-query";
 import { CreatePost } from "~/components/posts/CreatePost";
 import { PostsList } from "~/components/posts/PostsList";
@@ -12,6 +13,9 @@ export const PostsScreen = () => {
   const [meData, setMeData] = useState<any>(undefined);
 
   const [rerenderList, setRerenderList] = useState(false);
+
+  //bottom inset za ios
+  const insetsBottom = useSafeAreaInsets().bottom;
 
   const {
     isIdle,
@@ -76,6 +80,7 @@ export const PostsScreen = () => {
         rerenderList={rerenderList}
       />
       <CreatePost setRerenderList={setRerenderList} />
+      <View style={{ height: insetsBottom }}></View>
     </View>
   );
 };

@@ -6,14 +6,26 @@ import { C } from "~/constants";
 import { store } from "~/store/RootStore";
 import { View, Text, ScrollView } from "react-native";
 import { SinglePost } from "../posts/SinglePost";
+import { Instance } from "mobx-state-tree";
+import { Post } from "~/store/models/post/Post";
+import { queryClient } from "~/queryClient";
 
 export const PostListView = observer(function PostListView() {
   const route = useRoute();
   const params = route.params as { id: number };
   const userId: number = params.id;
 
-  const postListQuery = useQuery(["posts", "user", userId], () =>
-    store.postsStore.readAllPostsFromUser(userId)
+  const postListQuery = useQuery(
+    ["posts", "user", userId],
+    () => store.postsStore.readAllPostsFromUser(userId),
+    {
+      initialData: () => {
+        return queryClient
+          .getQueryData("posts")
+          .filter((post: Instance<typeof Post>) => post.user_id === userId)
+          .reverse();
+      },
+    }
   );
 
   const isIdle = postListQuery.isIdle;
@@ -38,8 +50,11 @@ export const PostListView = observer(function PostListView() {
     );
 
   return (
-    <ScrollView style={{ marginBottom: 30 }}>
-      {postListQuery.data.map((post) => {
+    <ScrollView
+      style={{ marginBottom: 30 }}
+      contentContainerStyle={{ flexDirection: "column-reverse" }}
+    >
+      {postListQuery.data.map((post: any) => {
         return <SinglePost key={post.id} data={{ post, user: undefined }} />;
       })}
     </ScrollView>

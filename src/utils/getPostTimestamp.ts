@@ -17,6 +17,6 @@ export function getPostTimestamp(postCreateAtDate: string) {
     }
     return `${dateDiff} days ago...`;
   }
-  if (timeDiff < 5 && timeDiff > 0) return "Moments ago...";
+  if (timeDiff < 5 && timeDiff >= 0) return "Moments ago...";
   return "Under 24 hours ago...";
 }
