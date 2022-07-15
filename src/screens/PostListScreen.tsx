@@ -4,14 +4,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "react-query";
 import { CreatePost } from "~/components/posts/CreatePost";
 import { PostsList } from "~/components/posts/PostsList";
-import { C } from "~/constants";
-import useAuth from "../hooks/useAuth";
 import { store } from "../store/RootStore";
 
 export const PostsScreen = () => {
-  const { meInfo, userToken } = useAuth();
-  const [meData, setMeData] = useState<any>(undefined);
-
   const [rerenderList, setRerenderList] = useState(false);
 
   //bottom inset za ios
@@ -28,27 +23,16 @@ export const PostsScreen = () => {
   const usersQuery = useQuery(["users"], () => store.userStore.readAllUsers());
 
   useEffect(() => {
-    const getMeData = async () => {
-      const res = await meInfo!();
-      if (res) setMeData(res);
-      else throw new Error("Invalid call...");
-    };
-    getMeData();
+    store.userStore.readMeData();
   }, []);
 
   useEffect(() => {
     refetchPosts();
   }, [rerenderList]);
 
-  if (
-    !meData ||
-    isLoading ||
-    isIdle ||
-    usersQuery.isLoading ||
-    usersQuery.isIdle
-  ) {
+  if (isLoading || isIdle || usersQuery.isLoading || usersQuery.isIdle) {
     return (
-      <View style={{ flex: 1, backgroundColor: C.lightGreen }}>
+      <View style={{ flex: 1, backgroundColor: "#f2ffe6" }}>
         <Text style={{ fontSize: 20, fontWeight: "bold", margin: 50 }}>
           Loading...
         </Text>
@@ -58,7 +42,7 @@ export const PostsScreen = () => {
 
   if (isError || usersQuery.isError)
     return (
-      <View style={{ flex: 1, backgroundColor: C.lightGreen }}>
+      <View style={{ flex: 1, backgroundColor: "#f2ffe6" }}>
         <Text style={{ fontSize: 20, fontWeight: "bold", margin: 50 }}>
           Error...
         </Text>

@@ -1,6 +1,6 @@
-import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useContext, useMemo, useState } from "react";
-import { BASE_URL } from "../constants";
+import { axiosInstance } from "~/service/axiosInstance";
 
 const AuthContext = createContext<ContextType | undefined>(undefined);
 
@@ -20,27 +20,29 @@ export const AuthContextProvider = ({ children }: any) => {
   const [userToken, setUserToken] = useState<string | undefined>(undefined);
 
   const login = async () => {
+    await AsyncStorage.clear();
     try {
-      const res = await axios({
+      const res = await axiosInstance({
         method: "post",
-        url: BASE_URL + "/auth/login",
+        url: "/auth/login",
         data: {
           email: "leonlav77@gmail.com",
           password: "password",
         },
       });
-      setUserToken(res.data.token);
+      await AsyncStorage.setItem("token", res.data.token);
       return res.data.token;
     } catch (error) {
-      return false;
+      console.log(error);
+      return error;
     }
   };
 
   const register = async () => {
     try {
-      const res = await axios({
+      const res = await axiosInstance({
         method: "post",
-        url: BASE_URL + "/auth/register",
+        url: "/auth/register",
         data: {
           name: "leon",
           email: "leonlav778@gmail.com",
@@ -48,23 +50,10 @@ export const AuthContextProvider = ({ children }: any) => {
           password_confirmation: "password",
         },
       });
-      setUserToken(res.data.token);
+      await AsyncStorage.setItem("token", res.data.token);
       return res.data.token;
     } catch (error) {
-      return false;
-    }
-  };
-
-  const meInfo = async () => {
-    try {
-      const res = await axios({
-        method: "get",
-        url: BASE_URL + "/auth/me",
-        headers: { Authorization: `Bearer ${userToken}` },
-      });
-      return res.data;
-    } catch (error) {
-      return false;
+      return error;
     }
   };
 
@@ -76,7 +65,6 @@ export const AuthContextProvider = ({ children }: any) => {
       setUserInfo,
       userToken,
       login,
-      meInfo,
       register,
       isLoggedIn,
       setUserToken,
@@ -99,7 +87,6 @@ interface ContextType {
   userToken: string | undefined;
   setUserToken: React.Dispatch<React.SetStateAction<string | undefined>>;
   login: () => Promise<any>;
-  meInfo: () => Promise<any>;
   register: () => Promise<any>;
   isLoggedIn: boolean;
   hasAcc: boolean;

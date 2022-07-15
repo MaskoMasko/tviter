@@ -1,6 +1,7 @@
-import axios, { AxiosResponse } from "axios";
-import { BASE_URL } from "../../../constants";
+import { AxiosResponse } from "axios";
 import { flow, Instance, types } from "mobx-state-tree";
+// import { axiosInstance } from "~/services/axiosInstance";
+import { axiosInstance } from "~/service/axiosInstance";
 import { Post } from "./Post";
 
 export const PostStore = types
@@ -12,26 +13,40 @@ export const PostStore = types
   .actions((self) => {
     return {
       readAllPosts: flow(function* () {
-        const res: AxiosResponse<Instance<typeof Post>[]> = yield axios({
-          method: "get",
-          url: BASE_URL + "/posts",
-        });
-
+        const res: AxiosResponse<Instance<typeof Post>[]> = yield axiosInstance(
+          {
+            method: "get",
+            url: "/posts",
+          }
+        );
         res.data = res.data.map((post) => {
           return self.posts.put(post);
         });
         return res.data;
       }),
       readAllPostsFromUser: flow(function* (userId) {
-        const res: AxiosResponse<Instance<typeof Post>[]> = yield axios({
-          method: "get",
-          url: BASE_URL + `/user/${userId}/posts`,
-        });
+        const res: AxiosResponse<Instance<typeof Post>[]> = yield axiosInstance(
+          {
+            method: "get",
+            url: `/user/${userId}/posts`,
+          }
+        );
 
         res.data = res.data.map((post) => {
           return self.userPosts.put(post);
         });
         return res.data;
+      }),
+      createPost: flow(function* () {
+        const res: AxiosResponse<Instance<typeof Post>> = yield axiosInstance({
+          method: "post",
+          url: `/posts`,
+          data: {
+            title: "somethingmpoasdo[pasjd[asj[dao[jsd" + new Date(),
+            body: "something else",
+          },
+        });
+        return self.posts.put(res.data);
       }),
     };
   });

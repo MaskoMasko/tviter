@@ -28,6 +28,7 @@ export const PostListView = observer(function PostListView() {
     }
   );
 
+  //u teoriji mi sve ovo ne rabi ali ajde
   const isIdle = postListQuery.isIdle;
   const isLoading = postListQuery.isLoading;
   const isError = postListQuery.isError;

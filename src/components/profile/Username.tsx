@@ -35,9 +35,6 @@ export const Username = observer(function Username() {
   return (
     <Text
       style={{
-        marginVertical: 50,
-        marginHorizontal: 20,
-        marginBottom: 15,
         fontSize: 24,
         fontWeight: "bold",
       }}

@@ -1,101 +1,57 @@
-import axios from "axios";
 import React, { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Modal from "react-native-modal";
-import { BASE_URL, C } from "../../constants";
-import useAuth from "../../hooks/useAuth";
+import { store } from "~/store/RootStore";
+import { C } from "../../constants";
 
 export const CreatePost = ({ setRerenderList }: any) => {
   const [showModal, setShowModal] = useState(false);
-  const { userToken } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const addPost = async () => {
-    try {
-      const res = await axios({
-        method: "post",
-        url: BASE_URL + "/posts",
-        data: {
-          title: "something" + new Date(),
-          body: "something else",
-        },
-        headers: { Authorization: `Bearer ${userToken}` },
-      });
-      console.log(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  if (isLoading) {
+    <View style={{ flex: 1, backgroundColor: C.lightGreen }}>
+      <Text style={{ fontSize: 20, fontWeight: "bold", margin: 50 }}>
+        Loading...
+      </Text>
+    </View>;
+  }
 
   return (
-    <View style={{ justifyContent: "center", alignItems: "center" }}>
+    <View style={styles.centerAll}>
       <TouchableOpacity
-        style={{
-          backgroundColor: C.darkGreen,
-          width: "80%",
-          height: 50,
-          borderRadius: 5,
-          justifyContent: "center",
-          marginVertical: 10,
-        }}
+        style={styles.showModalBtn}
         activeOpacity={0.5}
         onPress={() => setShowModal(true)}
       >
-        <Text
-          style={{
-            color: "whitesmoke",
-            fontSize: 18,
-            fontWeight: "bold",
-            textAlign: "center",
-          }}
-        >
-          Add post
-        </Text>
+        <Text style={styles.showModalBtnText}>Add post</Text>
       </TouchableOpacity>
       <Modal
         isVisible={showModal}
         animationIn={"slideInUp"}
         animationInTiming={750}
         animationOutTiming={750}
-        style={{ justifyContent: "center", alignItems: "center" }}
+        style={styles.centerAll}
       >
-        <View
-          style={{
-            width: "80%",
-            backgroundColor: C.moreYellowThanGreen,
-            borderRadius: 15,
-            padding: 20,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-around",
-              marginVertical: 15,
-            }}
-          >
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>Title: </Text>
+        <View style={styles.createPostContainer}>
+          <View style={styles.createPostForm}>
+            <Text style={styles.createPostText}>Title: </Text>
             <TextInput
-              style={{
-                backgroundColor: "whitesmoke",
-                paddingLeft: 10,
-                padding: 5,
-                borderRadius: 5,
-                width: "70%",
-              }}
+              style={styles.createPostTextInput}
               placeholder="Enter Title"
             />
           </View>
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-            Description:{" "}
-          </Text>
+          <Text style={styles.createPostText}>Description: </Text>
           <TextInput
-            style={{
-              backgroundColor: "whitesmoke",
-              paddingLeft: 10,
-              padding: 5,
-              borderRadius: 5,
-              marginVertical: 15,
-            }}
+            style={[
+              { minWidth: "100%", marginVertical: 10 },
+              styles.createPostTextInput,
+            ]}
             placeholder="Enter Description"
           />
           <View
@@ -106,34 +62,24 @@ export const CreatePost = ({ setRerenderList }: any) => {
             }}
           >
             <TouchableOpacity
-              style={{
-                backgroundColor: C.darkGreen,
-                borderRadius: 5,
-                padding: 10,
-                marginHorizontal: 10,
-              }}
-              onPress={() => {
+              style={styles.createPostSuccessBtn}
+              onPress={async () => {
                 setShowModal(false);
+                setIsLoading(true);
+                await store.postsStore.createPost();
                 setRerenderList((prevVal: boolean) => !prevVal);
-                addPost();
+                setIsLoading(false);
               }}
               activeOpacity={0.5}
             >
-              <Text style={{ color: "white", fontWeight: "bold" }}>
-                Create Post
-              </Text>
+              <Text style={styles.btnText}>Create Post</Text>
             </TouchableOpacity>
             <TouchableOpacity
               activeOpacity={0.5}
               onPress={() => setShowModal(false)}
-              style={{
-                backgroundColor: "red",
-                borderRadius: 5,
-                padding: 10,
-                marginHorizontal: 10,
-              }}
+              style={styles.createPostCancelBtn}
             >
-              <Text style={{ color: "white", fontWeight: "bold" }}>Cancel</Text>
+              <Text style={styles.btnText}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -141,3 +87,56 @@ export const CreatePost = ({ setRerenderList }: any) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  showModalBtn: {
+    backgroundColor: C.darkGreen,
+    width: "80%",
+    height: 50,
+    borderRadius: 5,
+    justifyContent: "center",
+    marginVertical: 10,
+  },
+  showModalBtnText: {
+    color: "whitesmoke",
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  centerAll: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  createPostContainer: {
+    width: "80%",
+    backgroundColor: C.moreYellowThanGreen,
+    borderRadius: 15,
+    padding: 20,
+  },
+  createPostForm: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginVertical: 15,
+  },
+  createPostTextInput: {
+    backgroundColor: "whitesmoke",
+    paddingLeft: 10,
+    padding: 5,
+    borderRadius: 5,
+    width: "70%",
+  },
+  createPostText: { fontSize: 20, fontWeight: "bold" },
+  createPostSuccessBtn: {
+    backgroundColor: C.darkGreen,
+    borderRadius: 5,
+    padding: 10,
+    marginHorizontal: 10,
+  },
+  createPostCancelBtn: {
+    backgroundColor: "red",
+    borderRadius: 5,
+    padding: 10,
+    marginHorizontal: 10,
+  },
+  btnText: { color: "white", fontWeight: "bold" },
+});
